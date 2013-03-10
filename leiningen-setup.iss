@@ -29,7 +29,6 @@ OutputBaseFilename=leiningen-installer
 Compression=lzma
 SolidCompression=yes
 ChangesEnvironment=yes
-ChangesAssociations=yes
 PrivilegesRequired=lowest
 
 [Languages]
