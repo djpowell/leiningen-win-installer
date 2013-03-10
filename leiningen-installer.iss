@@ -37,7 +37,7 @@ Name: "english"; MessagesFile: "compiler:Default.isl"
 [Files]
 Source: "lein.bat"; DestDir: "{app}"
 Source: "curl.exe"; DestDir: "{app}"
-Source: "license.txt"; DestDir: "{app}\license.txt"
+Source: "license.txt"; DestDir: "{app}"
 Source: "profiles.clj"; DestDir: "{%LEIN_HOME|{%USERPROFILE}\.lein}"; Flags: onlyifdoesntexist
 Source: "{#JRE_Source}\*"; DestDir: "{app}\java"; Flags: recursesubdirs createallsubdirs
 Source: "{#JDK_Source}\bin\javac.exe"; DestDir: "{app}\java\bin\"
