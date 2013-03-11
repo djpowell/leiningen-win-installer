@@ -2,9 +2,11 @@
 
 A standalone Windows Installer for Leiningen and Clojure.
 
-Everything you need to get started with Clojure in a couple of clicks.
-
 [Download](https://bitbucket.org/djpowell/leiningen-win-installer/downloads/leiningen-installer.exe)
+
+## Status
+
+This installer is currently just a a proof-of-concept.
 
 ## Details
 
