@@ -30,14 +30,19 @@ Compression=lzma
 SolidCompression=yes
 ChangesEnvironment=yes
 PrivilegesRequired=lowest
+SetupLogging=yes
 
 [Languages]
 Name: "english"; MessagesFile: "compiler:Default.isl"
 
+[InstallDelete]
+Type: filesandordirs; Name: "{app}\java"
+
 [Files]
-Source: "lein.bat"; DestDir: "{app}"
 Source: "curl.exe"; DestDir: "{app}"
+Source: "curl-ca-bundle.crt"; DestDir: "{app}"
 Source: "license.txt"; DestDir: "{app}"
+Source: "licenses\*"; DestDir: "{app}\licenses"
 Source: "profiles.clj"; DestDir: "{%LEIN_HOME|{%USERPROFILE}\.lein}"; Flags: onlyifdoesntexist
 Source: "{#JRE_Source}\*"; DestDir: "{app}\java"; Flags: recursesubdirs createallsubdirs
 Source: "{#JDK_Source}\bin\javac.exe"; DestDir: "{app}\java\bin\"
@@ -50,8 +55,14 @@ Name: "{group}\Clojure REPL"; Filename: "{app}\lein.bat"; WorkingDir: "{userdocs
 Name: "{group}\Edit profiles.clj"; Filename: "{%LEIN_HOME|{%USERPROFILE}\.lein}\profiles.clj"
 
 [Run]
+Filename: "{app}\curl.exe"; WorkingDir: "{app}"; Parameters: """https://raw.github.com/technomancy/leiningen/stable/bin/lein.bat"" -o lein.bat"; StatusMsg: "Downloading 'lein.bat'"; Flags: runasoriginaluser
 Filename: "{app}\lein.bat"; WorkingDir: "{userdocs}"; Parameters: "self-install"; StatusMsg: "Running 'lein self-install'"; Flags: runasoriginaluser
 Filename: "{app}\lein.bat"; WorkingDir: "{userdocs}"; Parameters: "repl"; Description: "Run a Clojure REPL"; Flags: postinstall nowait skipifsilent
+
+[UninstallDelete]
+Type: files; Name: "{app}\lein.bat"
+Type: filesandordirs; Name: "{%LEIN_HOME|{%USERPROFILE}\.lein}\self-installs"
+Type: filesandordirs; Name: "{%LEIN_HOME|{%USERPROFILE}\.lein}\indices"
 
 [Code]
 
@@ -83,14 +94,20 @@ begin
     begin
       Path := '';
     end
+    Log('Original PATH: ' + Path);
 
     AppPath := ExpandConstant('{app}');
+    Log('App Path: ' + AppPath);
+
     Path := AppendToPath(Path, AppPath);
+    Log('Updated PATH: ' + Path);
     RegWriteStringValue(HKEY_CURRENT_USER, 'Environment', 'Path', Path);
+    Log('PATH changed');
 
     JavaPath := AddQuotes(AddBackslash(AppPath) + 'java\bin\java.exe');
+    Log('Java Path: ' + JavaPath);
     RegWriteStringValue(HKEY_CURRENT_USER, 'Environment', 'LEIN_JAVA_CMD', JavaPath);
-
+    Log('Set LEIN_JAVA_CMD: ' + JavaPath);
   end
 end;
 
@@ -99,23 +116,33 @@ var
   AppPath: String;
   Path: String;
 begin
-  if CurUninstallStep = usPostUninstall then
+  if CurUninstallStep = usUninstall then
   begin
     if RegQueryStringValue(HKEY_CURRENT_USER, 'Environment', 'Path', Path) then
     begin
+      Log('Original PATH: ' + Path);
       AppPath := ExpandConstant('{app}');
-      if Pos(AppPath, Path) = 0 then
+      Log('App Path: ' + AppPath);
+      if Pos(AppPath, Path) <> 0 then
       begin
         StringChangeEx(Path, AppPath, '', True);
       end
 
       StringChangeEx(Path, ';;', ';', True);
+
+      if Copy(Path, Length(Path), 1) = ';' then
+      begin
+        SetLength(Path, Length(Path) - 1);
+      end
+
+      Log('Updated PATH: ' + Path);
       RegWriteStringValue(HKEY_CURRENT_USER, 'Environment', 'Path', Path);
+      Log('PATH changed');
     end
 
     RegDeleteValue(HKEY_CURRENT_USER, 'Environment', 'LEIN_JAVA_CMD');
+    Log('Removed LEIN_JAVA_CMD');
   end
 end;
-
 
 
