@@ -2,7 +2,7 @@
 
 #define MyAppName "Leiningen"
 #define MyAppVersion "installer_alpha_2"
-#define MyAppPublisher "djpowell"
+#define MyAppPublisher "David Powell"
 #define MyAppURL "https://bitbucket.org/djpowell/leiningen-win-installer"
              
 [Setup]
@@ -45,7 +45,7 @@ Name: "{group}\Edit profiles.clj"; Filename: "{%LEIN_HOME|{%USERPROFILE}\.lein}\
 [Run]
 Filename: "{app}\curl.exe"; WorkingDir: "{app}"; Parameters: """https://raw.github.com/technomancy/leiningen/stable/bin/lein.bat"" -o lein.bat"; StatusMsg: "Downloading 'lein.bat'"; Flags: runasoriginaluser runminimized
 Filename: "{app}\lein.bat"; WorkingDir: "{app}"; Parameters: "self-install"; StatusMsg: "Running 'lein self-install'"; Flags: runasoriginaluser runminimized
-Filename: "{app}\lein.bat"; WorkingDir: "{userdocs}"; Parameters: "repl"; Description: "Run a Clojure REPL"; Flags: postinstall nowait skipifsilent 
+Filename: "{app}\lein.bat"; WorkingDir: "{userdocs}"; Parameters: "repl"; Description: "Run a Clojure REPL"; Flags: postinstall nowait skipifsilent
 
 [UninstallDelete]
 Type: files; Name: "{app}\lein.bat"
@@ -222,7 +222,6 @@ end;
 
 function NextButtonClick(CurPageID: Integer): Boolean;
 begin
-  // TODO
   if CurPageId = CustomJdkPage.ID then
   begin
     if FileExists(AddBackslash(CustomJdkPage.Values[0]) + 'bin\javac.exe') then
@@ -344,3 +343,4 @@ begin
 end;
 
 // TODO sort the jdk list sensibly
+// TODO set :java-cmd in the :user profile in profiles.clj
