@@ -230,19 +230,6 @@ leiningen is distributed under the Eclipse Public License - v 1.0.
 
 				 ---
 
-The Java redistributables are distributed under the terms of the
-Oracle Binary Code License Agreement:
-
-http://www.oracle.com/technetwork/java/javase/terms/license/index.html
-
-Use of the Commercial Features for any commercial or production
-purpose requires a separate license from Oracle. "Commercial Features"
-means those features identified Table 1-1 (Commercial Features In Java
-SE Product Editions) of the Java SE documentation accessible at
-http://www.oracle.com/technetwork/java/javase/documentation/index.html
-
-				 ---
-
 curl is distributed under the following license:
 
 
