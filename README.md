@@ -2,7 +2,7 @@
 
 A standalone Windows Installer for Leiningen and Clojure.
 
-[Download](https://bitbucket.org/djpowell/leiningen-win-installer/downloads/leiningen-installer-alpha3.exe)
+[Download](https://bitbucket.org/djpowell/leiningen-win-installer/downloads/leiningen-installer-alpha_3.exe)
 
 ## Status
 
