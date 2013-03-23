@@ -1,9 +1,10 @@
 ; InnoSetup 5.5.3 Installer definition for Leiningen - (c) David Powell 2013
 
 #define MyAppName "Leiningen"
-#define MyAppVersion "installer_alpha_2"
+#define MyAppVersion "installer_alpha_3"
 #define MyAppPublisher "David Powell"
 #define MyAppURL "https://bitbucket.org/djpowell/leiningen-win-installer"
+#define MyInstallerBaseName "leiningen-installer"
              
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application.
@@ -21,7 +22,7 @@ DefaultDirName={userpf}\{#MyAppName}
 DefaultGroupName={#MyAppName}
 DisableProgramGroupPage=yes
 LicenseFile=license.txt
-OutputBaseFilename=leiningen-installer
+OutputBaseFilename={#MyInstallerBaseName}
 Compression=lzma
 SolidCompression=yes
 ChangesEnvironment=yes
@@ -37,6 +38,7 @@ Source: "curl-ca-bundle.crt"; DestDir: "{app}"
 Source: "license.txt"; DestDir: "{app}"
 Source: "licenses\*"; DestDir: "{app}\licenses"
 Source: "profiles.clj"; DestDir: "{%LEIN_HOME|{%USERPROFILE}\.lein}"; Flags: onlyifdoesntexist
+Source: "file-assoc-in-0.1.0-standalone.jar"; DestDir: "{app}"
 
 [Icons]                                             
 Name: "{group}\Clojure REPL"; Filename: "{app}\lein.bat"; WorkingDir: "{userdocs}"; Parameters: "repl"
@@ -44,8 +46,8 @@ Name: "{group}\Edit profiles.clj"; Filename: "{%LEIN_HOME|{%USERPROFILE}\.lein}\
 
 [Run]
 Filename: "{app}\curl.exe"; WorkingDir: "{app}"; Parameters: """https://raw.github.com/technomancy/leiningen/stable/bin/lein.bat"" -o lein.bat"; StatusMsg: "Downloading 'lein.bat'"; Flags: runasoriginaluser runminimized
-Filename: "{app}\lein.bat"; WorkingDir: "{app}"; Parameters: "self-install"; StatusMsg: "Running 'lein self-install'"; Flags: runasoriginaluser runminimized
-Filename: "{app}\lein.bat"; WorkingDir: "{userdocs}"; Parameters: "repl"; Description: "Run a Clojure REPL"; Flags: postinstall nowait skipifsilent
+Filename: "{cmd}"; WorkingDir: "{app}"; Parameters: "/c set LEIN_JAVA_CMD={code:GetSelectedJdkPath} && ""{app}\lein.bat"" self-install"; StatusMsg: "Running 'lein self-install'"; Flags: runasoriginaluser runminimized
+Filename: "{cmd}"; WorkingDir: "{userdocs}"; Parameters: "/c set LEIN_JAVA_CMD={code:GetSelectedJdkPath} && ""{app}\lein.bat"" repl"; Description: "Run a Clojure REPL"; Flags: postinstall nowait skipifsilent
 
 [UninstallDelete]
 Type: files; Name: "{app}\lein.bat"
@@ -53,6 +55,9 @@ Type: filesandordirs; Name: "{%LEIN_HOME|{%USERPROFILE}\.lein}\self-installs"
 Type: filesandordirs; Name: "{%LEIN_HOME|{%USERPROFILE}\.lein}\indices"
 
 [Code]
+
+const
+  FileAssocJarName = 'file-assoc-in-0.1.0-standalone.jar';
 
 var      
   JdkCount : Integer;
@@ -65,6 +70,11 @@ var
   SelectedJdkIndex : Integer;
   SelectedJdkPath : String;
 
+function GetSelectedJdkPath(Param: String): String;
+begin
+  Result := SelectedJdkPath;
+end;
+
 procedure PopulateJdks();
 var
   JavaVersions : TArrayOfString;
@@ -72,11 +82,16 @@ var
   I, J, JI : Integer;
   JavaCount : Integer;
 begin
-  JavaCount := 0;                                         
-  if RegGetSubkeyNames(HKEY_LOCAL_MACHINE_64, 'SOFTWARE\JavaSoft\Java Development Kit', JavaVersions) then
+  JavaCount := 0;
+
+  if IsWin64() then
   begin
-    JavaCount := JavaCount + GetArrayLength(JavaVersions);
+    if RegGetSubkeyNames(HKEY_LOCAL_MACHINE_64, 'SOFTWARE\JavaSoft\Java Development Kit', JavaVersions) then
+    begin
+      JavaCount := JavaCount + GetArrayLength(JavaVersions);
+    end
   end
+
   if RegGetSubkeyNames(HKEY_LOCAL_MACHINE, 'SOFTWARE\JavaSoft\Java Development Kit', JavaVersions) then
   begin
     JavaCount := JavaCount + GetArrayLength(JavaVersions);
@@ -89,15 +104,18 @@ begin
             
   JI := 0;
 
-  if RegGetSubkeyNames(HKEY_LOCAL_MACHINE_64, 'SOFTWARE\JavaSoft\Java Development Kit', JavaVersions) then
+  if IsWin64() then
   begin
-    for I := 0 to GetArrayLength(JavaVersions)-1 do
+    if RegGetSubkeyNames(HKEY_LOCAL_MACHINE_64, 'SOFTWARE\JavaSoft\Java Development Kit', JavaVersions) then
     begin
-      RegQueryStringValue(HKEY_LOCAL_MACHINE_64, 'SOFTWARE\JavaSoft\Java Development Kit\' + JavaVersions[I], 'JavaHome', JavaPath);
-      JdkVersions[JI] := JavaVersions[I];
-      Jdk64s[JI] := True;
-      JdkPaths[JI] := JavaPath;
-      JI := JI + 1;
+      for I := 0 to GetArrayLength(JavaVersions)-1 do
+      begin
+        RegQueryStringValue(HKEY_LOCAL_MACHINE_64, 'SOFTWARE\JavaSoft\Java Development Kit\' + JavaVersions[I], 'JavaHome', JavaPath);
+        JdkVersions[JI] := JavaVersions[I];
+        Jdk64s[JI] := True;
+        JdkPaths[JI] := JavaPath;
+        JI := JI + 1;
+      end
     end
   end
 
@@ -175,7 +193,7 @@ var
   I, JI : Integer;
   Description : String;
 begin
-  JdkPage := CreateInputOptionPage(wpSelectDir, 'Select JDK', '', 'Select the path to a Java Development Kit for Leiningen to use:', True, True);
+  JdkPage := CreateInputOptionPage(wpSelectProgramGroup, 'Select JDK', '', 'Select the path to a Java Development Kit for Leiningen to use:', True, False);
 
   JI := 0;
   for I := 0 to GetArrayLength(JdkVersions)-1 do
@@ -207,17 +225,16 @@ begin
   CustomJdkPage.Add('');
 end;
 
-function SelectedJdkLocation() : String;
+Procedure SetSelectedJdkLocation();
 begin
   if JdkPage.SelectedValueIndex = (JdkPage.CheckListBox.Items.Count - 1) then
   begin
-    SelectedJdkPath := AddBackslash(CustomJdkPage.Values[0]) + 'bin\java.exe';
+    SelectedJdkPath := RemoveQuotes(AddBackslash(CustomJdkPage.Values[0]) + 'bin\java.exe');
   end
   else
   begin
-    SelectedJdkPath := AddBackslash(JdkPaths[SelectedJdkIndex]) + 'bin\java.exe';
+    SelectedJdkPath := RemoveQuotes(AddBackslash(JdkPaths[SelectedJdkIndex]) + 'bin\java.exe');
   end
-  Result := SelectedJdkPath;
 end;
 
 function NextButtonClick(CurPageID: Integer): Boolean;
@@ -280,6 +297,45 @@ begin
   Result := Path;
 end;
 
+function SetProfileJavaCmd(JavaPath: String): Boolean;
+var
+  ProfilesPath: String;
+  AssocArgs: String;
+  ResultCode: Integer;
+  ResultMsg: String;
+  Success: Boolean;
+begin
+  ProfilesPath := AddBackslash(ExpandConstant('{%LEIN_HOME|{%USERPROFILE}\.lein}')) + 'profiles.clj';
+  AssocArgs := '-jar ' + AddQuotes(AddBackslash(ExpandConstant('{app}')) + FileAssocJarName) + ' ' +
+                            AddQuotes(ProfilesPath) + ' ' +
+                            '"[:user :java-cmd]"' + ' ' +
+                            AddQuotes(JavaPath);
+  Log('Assoc Command: ' + RemoveQuotes(JavaPath) + ' ' + AssocArgs);
+  Success := Exec(RemoveQuotes(JavaPath), AssocArgs,
+                      ExpandConstant('{app}'), SW_SHOWMINIMIZED, ewWaitUntilTerminated, ResultCode);
+  if Success and (ResultCode = 0) then
+  begin
+    Log('Updated profile');
+  end
+  else
+  begin
+    if Success then
+    begin
+      ResultMsg := 'Ran';
+    end
+    else
+    begin
+      ResultMsg := SysErrorMessage(ResultCode);
+    end
+    Log('Failed to update profile: ' + IntToStr(ResultCode));
+    MsgBox('Failed to update file: ' + ProfilesPath + chr(13) + chr(10) +
+            'Ensure that :java-cmd is set to: ' + JavaPath + ' in your :user profile.' + chr(13) + chr(10) +
+            'Result: ' + ResultMsg + '; Code: ' + IntToStr(ResultCode),
+            mbError, MB_OK);
+  end
+  Result := Success;
+end;
+
 procedure CurStepChanged(CurStep: TSetupStep);
 var                     
   AppPath: String;
@@ -288,7 +344,7 @@ var
 begin                
   if CurStep = ssInstall then
   begin
-    SelectedJdkLocation();
+    SetSelectedJdkLocation();
   end
   else if CurStep = ssPostInstall then
   begin
@@ -310,6 +366,8 @@ begin
     Log('Java Path: ' + JavaPath);
     RegWriteStringValue(HKEY_CURRENT_USER, 'Environment', 'LEIN_JAVA_CMD', JavaPath);
     Log('Set LEIN_JAVA_CMD: ' + JavaPath);
+
+    SetProfileJavaCmd(JavaPath);
   end
 end;
 
@@ -343,4 +401,8 @@ begin
 end;
 
 // TODO sort the jdk list sensibly
-// TODO set :java-cmd in the :user profile in profiles.clj
+// TODO add modify button to control panel
+// TODO add more logging
+// TODO preserve jdk selection when possible
+// TODO perhaps reconfigure shouldn't download the latest lein?
+// TODO perhaps make a separate installer, with the same appid, and Uninstallable: no, and UpdateUninstallLogAppName: no, for changing the java paths
