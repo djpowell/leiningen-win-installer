@@ -230,6 +230,14 @@ leiningen is distributed under the Eclipse Public License - v 1.0.
 
 				 ---
 
+sjacket is distributed under the Eclipse Public License - v 1.0.
+
+				 ---
+
+enlive is distributed under the Eclipse Public License - v 1.0.
+
+				 ---
+
 curl is distributed under the following license:
 
 
