@@ -23,7 +23,7 @@ DefaultGroupName={#MyAppName}
 DisableProgramGroupPage=yes
 LicenseFile=license.txt
 OutputBaseFilename={#MyInstallerBaseName}-{#MyAppVersion}
-Compression=lzma
+Compression=zip
 SolidCompression=yes
 ChangesEnvironment=yes
 PrivilegesRequired=lowest
@@ -69,6 +69,9 @@ var
   CustomJdkPage : TInputDirWizardPage;  
   SelectedJdkIndex : Integer;
   SelectedJdkPath : String;
+  PreviousJdkPath : String;
+  PreviousJdkIndex : Integer;
+  CustomJdkIndex : Integer;
 
 function GetSelectedJdkPath(Param: String): String;
 begin
@@ -168,6 +171,12 @@ begin
     end
   end
 
+  PreviousJdkPath := GetEnv('LEIN_JAVA_CMD');
+  if not FileExists(PreviousJdkPath) then
+  begin
+    PreviousJdkPath := '';
+  end
+
 end;
 
 function InitializeSetup(): Boolean;
@@ -219,6 +228,18 @@ begin
     end
   end
 
+  if (PreviousJdkPath <> '') then
+  begin
+    PreviousJdkIndex := JI;
+    JdkPage.Add('Previous location.    ( ' + PreviousJdkPath + ' )');
+    JdkPage.SelectedValueIndex := PreviousJdkIndex;
+  end
+  else
+  begin
+    PreviousJdkIndex := -2;
+  end
+
+  CustomJdkIndex := JI + 1;
   JdkPage.Add('Custom location...');
 
   CustomJdkPage := CreateInputDirPage(JdkPage.ID, 'Custom JDK Location', '', 'Specify the location of an installed JDK:', False, '');
@@ -227,9 +248,13 @@ end;
 
 Procedure SetSelectedJdkLocation();
 begin
-  if JdkPage.SelectedValueIndex = (JdkPage.CheckListBox.Items.Count - 1) then
+  if JdkPage.SelectedValueIndex = CustomJdkIndex then
   begin
     SelectedJdkPath := RemoveQuotes(AddBackslash(CustomJdkPage.Values[0]) + 'bin\java.exe');
+  end
+  else if JdkPage.SelectedValueIndex = PreviousJdkIndex then
+  begin
+    SelectedJdkPath := RemoveQuotes(PreviousJdkPath);
   end
   else
   begin
@@ -243,6 +268,7 @@ begin
   begin
     if FileExists(AddBackslash(CustomJdkPage.Values[0]) + 'bin\javac.exe') then
     begin
+      SetSelectedJdkLocation();
       Result := True;
     end
     else
@@ -260,6 +286,10 @@ begin
     else
     begin
       SelectedJdkIndex := JdkIndexes[JdkPage.SelectedValueIndex];
+      if JdkPage.SelectedValueIndex <> CustomJdkIndex then
+      begin
+        SetSelectedJdkLocation();
+      end
       Result := True;
     end
   end
@@ -336,17 +366,24 @@ begin
   Result := Success;
 end;
 
+function UpdateReadyMemo(Space, NewLine, MemoUserInfoInfo, MemoDirInfo, MemoTypeInfo, MemoComponentsInfo, MemoGroupInfo, MemoTasksInfo: String): String;
+begin
+  Result := MemoUserInfoInfo +
+            MemoDirInfo +
+            MemoTypeInfo +
+            MemoComponentsInfo +
+            MemoGroupInfo +
+            MemoTasksInfo +
+            NewLine + 'JDK Path:' + NewLine + Space + SelectedJdkPath;
+end;
+
 procedure CurStepChanged(CurStep: TSetupStep);
 var                     
   AppPath: String;
   JavaPath: String;
   Path: String;
 begin                
-  if CurStep = ssInstall then
-  begin
-    SetSelectedJdkLocation();
-  end
-  else if CurStep = ssPostInstall then
+  if CurStep = ssPostInstall then
   begin
     if not RegQueryStringValue(HKEY_CURRENT_USER, 'Environment', 'Path', Path) then
     begin
@@ -403,6 +440,7 @@ end;
 // TODO sort the jdk list sensibly
 // TODO add modify button to control panel
 // TODO add more logging
-// TODO preserve jdk selection when possible
 // TODO perhaps reconfigure shouldn't download the latest lein?
 // TODO perhaps make a separate installer, with the same appid, and Uninstallable: no, and UpdateUninstallLogAppName: no, for changing the java paths
+// TODO add some sort of HTML readme
+// TODO maybe use ~/.lein/bin as install path
