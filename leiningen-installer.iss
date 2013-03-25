@@ -36,7 +36,6 @@ Name: "english"; MessagesFile: "compiler:Default.isl"
 Source: "curl.exe"; DestDir: "{app}"
 Source: "curl-ca-bundle.crt"; DestDir: "{app}"
 Source: "license.txt"; DestDir: "{app}"
-Source: "licenses\*"; DestDir: "{app}\licenses"
 Source: "profiles.clj"; DestDir: "{%LEIN_HOME|{%USERPROFILE}\.lein}"; Flags: onlyifdoesntexist
 Source: "file-assoc-in-0.1.0-standalone.jar"; DestDir: "{app}"
 
@@ -191,7 +190,12 @@ begin
   end
   else
   begin
-    Button := MsgBox('An installed Java Development Kit could not been found automatically.' + Chr(13) + Chr(10) + Chr(13) + Chr(10) + 'Ensure that you have downloaded and installed a JDK from:' + Chr(13) + Chr(10) + 'http://www.oracle.com/technetwork/java/javase/overview/index.html' + Chr(13) + Chr(10) + Chr(13) + Chr(10) + 'Continue the installation?', mbError, MB_YESNO or MB_DEFBUTTON2);
+    Button := MsgBox('An installed Java Development Kit could not be found automatically.' + Chr(13) + Chr(10) +
+                      Chr(13) + Chr(10) + 
+                      'Ensure that you have downloaded and installed a JDK from:' + Chr(13) + Chr(10) + 
+                      'http://www.oracle.com/technetwork/java/javase/overview/index.html' + Chr(13) + Chr(10) + 
+                      Chr(13) + Chr(10) + 
+                      'Continue the installation?', mbError, MB_YESNO or MB_DEFBUTTON2);
     Result := (Button = IDYES);
   end 
 
