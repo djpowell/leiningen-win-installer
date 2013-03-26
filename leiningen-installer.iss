@@ -18,7 +18,9 @@ AppPublisher={#MyAppPublisher}
 AppPublisherURL={#MyAppURL}
 AppSupportURL={#MyAppURL}
 AppUpdatesURL={#MyAppURL}
-DefaultDirName={userpf}\{#MyAppName}
+DefaultDirName={%LEIN_HOME|{%USERPROFILE}\.lein}
+UninstallFilesDir={app}\bin
+DirExistsWarning=no
 DefaultGroupName={#MyAppName}
 DisableProgramGroupPage=yes
 LicenseFile=license.txt
@@ -33,23 +35,23 @@ SetupLogging=yes
 Name: "english"; MessagesFile: "compiler:Default.isl"
 
 [Files]
-Source: "curl.exe"; DestDir: "{app}"
-Source: "curl-ca-bundle.crt"; DestDir: "{app}"
-Source: "license.txt"; DestDir: "{app}"
+Source: "curl.exe"; DestDir: "{app}\bin"
+Source: "curl-ca-bundle.crt"; DestDir: "{app}\bin"
+Source: "license.txt"; DestDir: "{app}\bin"
+Source: "file-assoc-in-0.1.0-standalone.jar"; DestDir: "{app}\bin"
 Source: "profiles.clj"; DestDir: "{%LEIN_HOME|{%USERPROFILE}\.lein}"; Flags: onlyifdoesntexist
-Source: "file-assoc-in-0.1.0-standalone.jar"; DestDir: "{app}"
 
 [Icons]                                             
-Name: "{group}\Clojure REPL"; Filename: "{app}\lein.bat"; WorkingDir: "{userdocs}"; Parameters: "repl"
+Name: "{group}\Clojure REPL"; Filename: "{app}\bin\lein.bat"; WorkingDir: "{userdocs}"; Parameters: "repl"
 Name: "{group}\Edit profiles.clj"; Filename: "{%LEIN_HOME|{%USERPROFILE}\.lein}\profiles.clj"
 
 [Run]
-Filename: "{app}\curl.exe"; WorkingDir: "{app}"; Parameters: """https://raw.github.com/technomancy/leiningen/stable/bin/lein.bat"" -o lein.bat"; StatusMsg: "Downloading 'lein.bat'"; Flags: runasoriginaluser runminimized
-Filename: "{cmd}"; WorkingDir: "{app}"; Parameters: "/c set LEIN_JAVA_CMD={code:GetSelectedJdkPath} && ""{app}\lein.bat"" self-install"; StatusMsg: "Running 'lein self-install'"; Flags: runasoriginaluser runminimized
-Filename: "{cmd}"; WorkingDir: "{userdocs}"; Parameters: "/c set LEIN_JAVA_CMD={code:GetSelectedJdkPath} && ""{app}\lein.bat"" repl"; Description: "Run a Clojure REPL"; Flags: postinstall nowait skipifsilent
+Filename: "{app}\bin\curl.exe"; WorkingDir: "{app}\bin"; Parameters: """https://raw.github.com/technomancy/leiningen/stable/bin/lein.bat"" -o lein.bat"; StatusMsg: "Downloading 'lein.bat'"; Flags: runasoriginaluser runminimized
+Filename: "{cmd}"; WorkingDir: "{app}\bin"; Parameters: "/c set LEIN_JAVA_CMD={code:GetSelectedJdkPath} && ""{app}\bin\lein.bat"" self-install"; StatusMsg: "Running 'lein self-install'"; Flags: runasoriginaluser runminimized
+Filename: "{cmd}"; WorkingDir: "{userdocs}"; Parameters: "/c set LEIN_JAVA_CMD={code:GetSelectedJdkPath} && ""{app}\bin\lein.bat"" repl"; Description: "Run a Clojure REPL"; Flags: postinstall nowait skipifsilent
 
 [UninstallDelete]
-Type: files; Name: "{app}\lein.bat"
+Type: files; Name: "{app}\bin\lein.bat"
 Type: filesandordirs; Name: "{%LEIN_HOME|{%USERPROFILE}\.lein}\self-installs"
 Type: filesandordirs; Name: "{%LEIN_HOME|{%USERPROFILE}\.lein}\indices"
 
@@ -340,13 +342,13 @@ var
   Success: Boolean;
 begin
   ProfilesPath := AddBackslash(ExpandConstant('{%LEIN_HOME|{%USERPROFILE}\.lein}')) + 'profiles.clj';
-  AssocArgs := '-jar ' + AddQuotes(AddBackslash(ExpandConstant('{app}')) + FileAssocJarName) + ' ' +
+  AssocArgs := '-jar ' + AddQuotes(AddBackslash(ExpandConstant('{app}\bin')) + FileAssocJarName) + ' ' +
                             AddQuotes(ProfilesPath) + ' ' +
                             '"[:user :java-cmd]"' + ' ' +
                             AddQuotes(JavaPath);
   Log('Assoc Command: ' + RemoveQuotes(JavaPath) + ' ' + AssocArgs);
   Success := Exec(RemoveQuotes(JavaPath), AssocArgs,
-                      ExpandConstant('{app}'), SW_SHOWMINIMIZED, ewWaitUntilTerminated, ResultCode);
+                      ExpandConstant('{app}\bin'), SW_SHOWMINIMIZED, ewWaitUntilTerminated, ResultCode);
   if Success and (ResultCode = 0) then
   begin
     Log('Updated profile');
@@ -395,7 +397,7 @@ begin
     end
     Log('Original PATH: ' + Path);
 
-    AppPath := ExpandConstant('{app}');
+    AppPath := ExpandConstant('{app}\bin');
     Log('App Path: ' + AppPath);
 
     Path := AppendToPath(Path, AppPath);
@@ -422,7 +424,7 @@ begin
     if RegQueryStringValue(HKEY_CURRENT_USER, 'Environment', 'Path', Path) then
     begin
       Log('Original PATH: ' + Path);
-      AppPath := ExpandConstant('{app}');
+      AppPath := ExpandConstant('{app}\bin');
       Log('App Path: ' + AppPath);
       if Pos(AppPath, Path) <> 0 then
       begin
@@ -447,4 +449,3 @@ end;
 // TODO perhaps reconfigure shouldn't download the latest lein?
 // TODO perhaps make a separate installer, with the same appid, and Uninstallable: no, and UpdateUninstallLogAppName: no, for changing the java paths
 // TODO add some sort of HTML readme
-// TODO maybe use ~/.lein/bin as install path
