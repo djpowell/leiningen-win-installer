@@ -244,6 +244,7 @@ begin
   if (PreviousJdkPath <> '') then
   begin
     PreviousJdkIndex := JI;
+    JI := JI + 1;
     JdkPage.Add('Previous location.    ( ' + PreviousJdkPath + ' )');
     JdkPage.SelectedValueIndex := PreviousJdkIndex;
   end
@@ -252,7 +253,7 @@ begin
     PreviousJdkIndex := -2;
   end
 
-  CustomJdkIndex := JI + 1;
+  CustomJdkIndex := JI;
   JdkPage.Add('Custom location...');
 
   CustomJdkPage := CreateInputDirPage(JdkPage.ID, 'Custom JDK Location', '', 'Specify the location of an installed JDK:', False, '');
