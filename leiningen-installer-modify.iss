@@ -23,7 +23,7 @@ DisableDirPage=yes
 DirExistsWarning=no
 DefaultGroupName={#MyAppName}
 DisableProgramGroupPage=yes
-OutputBaseFilename=modify-{#MyInstallerBaseName}-{#MyAppVersion}
+OutputBaseFilename=modify-{#MyInstallerBaseName}
 Compression=zip
 SolidCompression=yes
 ChangesEnvironment=yes
@@ -408,7 +408,7 @@ begin
     RegWriteStringValue(HKEY_CURRENT_USER, 'Environment', 'Path', Path);
     Log('PATH changed');
 
-    JavaPath := AddQuotes(SelectedJdkPath);
+    JavaPath := RemoveQuotes(SelectedJdkPath);
     Log('Java Path: ' + JavaPath);
     RegWriteStringValue(HKEY_CURRENT_USER, 'Environment', 'LEIN_JAVA_CMD', JavaPath);
     Log('Set LEIN_JAVA_CMD: ' + JavaPath);

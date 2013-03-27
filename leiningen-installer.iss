@@ -18,7 +18,7 @@ AppPublisher={#MyAppPublisher}
 AppPublisherURL={#MyAppURL}
 AppSupportURL={#MyAppURL}
 AppUpdatesURL={#MyAppURL}
-AppModifyPath="{app}\bin\modify-{#MyInstallerBaseName}-{#MyAppVersion}.exe"
+AppModifyPath="{app}\bin\modify-{#MyInstallerBaseName}.exe"
 DefaultDirName={%LEIN_HOME|{%USERPROFILE}\.lein}
 UninstallFilesDir={app}\bin
 DirExistsWarning=no
@@ -412,7 +412,7 @@ begin
     RegWriteStringValue(HKEY_CURRENT_USER, 'Environment', 'Path', Path);
     Log('PATH changed');
 
-    JavaPath := AddQuotes(SelectedJdkPath);
+    JavaPath := RemoveQuotes(SelectedJdkPath);
     Log('Java Path: ' + JavaPath);
     RegWriteStringValue(HKEY_CURRENT_USER, 'Environment', 'LEIN_JAVA_CMD', JavaPath);
     Log('Set LEIN_JAVA_CMD: ' + JavaPath);
