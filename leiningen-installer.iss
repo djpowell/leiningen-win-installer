@@ -1,7 +1,7 @@
 ; InnoSetup 5.5.3 Installer definition for Leiningen - (c) David Powell 2013
 
 #define MyAppName "Leiningen"
-#define MyAppVersion "alpha_3"
+#define MyAppVersion "alpha_4"
 #define MyAppPublisher "David Powell"
 #define MyAppURL "https://bitbucket.org/djpowell/leiningen-win-installer"
 #define MyInstallerBaseName "leiningen-installer"
@@ -18,6 +18,7 @@ AppPublisher={#MyAppPublisher}
 AppPublisherURL={#MyAppURL}
 AppSupportURL={#MyAppURL}
 AppUpdatesURL={#MyAppURL}
+AppModifyPath="{app}\bin\modify-{#MyInstallerBaseName}-{#MyAppVersion}.exe"
 DefaultDirName={%LEIN_HOME|{%USERPROFILE}\.lein}
 UninstallFilesDir={app}\bin
 DirExistsWarning=no
@@ -39,6 +40,7 @@ Source: "curl.exe"; DestDir: "{app}\bin"
 Source: "curl-ca-bundle.crt"; DestDir: "{app}\bin"
 Source: "license.txt"; DestDir: "{app}\bin"
 Source: "file-assoc-in-0.1.0-standalone.jar"; DestDir: "{app}\bin"
+Source: "Output\modify-{#MyInstallerBaseName}-{#MyAppVersion}.exe"; DestDir: "{app}\bin"
 Source: "profiles.clj"; DestDir: "{%LEIN_HOME|{%USERPROFILE}\.lein}"; Flags: onlyifdoesntexist
 
 [Icons]                                             
@@ -77,6 +79,11 @@ var
 function GetSelectedJdkPath(Param: String): String;
 begin
   Result := SelectedJdkPath;
+end;
+
+function IsInstalled(): Boolean;
+begin
+  Result := RegValueExists(HKEY_CURRENT_USER, 'Software\Microsoft\Windows\CurrentVersion\Uninstall\{450F3BB7-7198-4401-A147-BDA0BECF6A3A}_is1', 'UninstallString');
 end;
 
 procedure PopulateJdks();
@@ -346,8 +353,8 @@ begin
                             AddQuotes(ProfilesPath) + ' ' +
                             '"[:user :java-cmd]"' + ' ' +
                             AddQuotes(JavaPath);
-  Log('Assoc Command: ' + RemoveQuotes(JavaPath) + ' ' + AssocArgs);
-  Success := Exec(RemoveQuotes(JavaPath), AssocArgs,
+  Log('Assoc Command: ' + JavaPath + ' ' + AssocArgs);
+  Success := Exec(JavaPath, AssocArgs,
                       ExpandConstant('{app}\bin'), SW_SHOWMINIMIZED, ewWaitUntilTerminated, ResultCode);
   if Success and (ResultCode = 0) then
   begin
@@ -365,7 +372,7 @@ begin
     end
     Log('Failed to update profile: ' + IntToStr(ResultCode));
     MsgBox('Failed to update file: ' + ProfilesPath + chr(13) + chr(10) +
-            'Ensure that :java-cmd is set to: ' + JavaPath + ' in your :user profile.' + chr(13) + chr(10) +
+            'Ensure that :java-cmd is set to: ' + AddQuotes(JavaPath) + ' in your :user profile.' + chr(13) + chr(10) +
             'Result: ' + ResultMsg + '; Code: ' + IntToStr(ResultCode),
             mbError, MB_OK);
   end
@@ -444,8 +451,6 @@ begin
 end;
 
 // TODO sort the jdk list sensibly
-// TODO add modify button to control panel
 // TODO add more logging
 // TODO perhaps reconfigure shouldn't download the latest lein?
-// TODO perhaps make a separate installer, with the same appid, and Uninstallable: no, and UpdateUninstallLogAppName: no, for changing the java paths
 // TODO add some sort of HTML readme

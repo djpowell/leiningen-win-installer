@@ -1,7 +1,7 @@
 ; InnoSetup 5.5.3 Installer definition for Leiningen - (c) David Powell 2013
 
 #define MyAppName "Leiningen"
-#define MyAppVersion "alpha_3"
+#define MyAppVersion "alpha_4"
 #define MyAppPublisher "David Powell"
 #define MyAppURL "https://bitbucket.org/djpowell/leiningen-win-installer"
 #define MyInstallerBaseName "leiningen-installer"
