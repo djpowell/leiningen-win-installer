@@ -40,7 +40,7 @@ Source: "curl.exe"; DestDir: "{app}\bin"
 Source: "curl-ca-bundle.crt"; DestDir: "{app}\bin"
 Source: "license.txt"; DestDir: "{app}\bin"
 Source: "file-assoc-in-0.1.0-standalone.jar"; DestDir: "{app}\bin"
-Source: "Output\modify-{#MyInstallerBaseName}-{#MyAppVersion}.exe"; DestDir: "{app}\bin"
+Source: "Output\modify-{#MyInstallerBaseName}.exe"; DestDir: "{app}\bin"
 Source: "profiles.clj"; DestDir: "{%LEIN_HOME|{%USERPROFILE}\.lein}"; Flags: onlyifdoesntexist
 
 [Icons]                                             
