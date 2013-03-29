@@ -480,7 +480,3 @@ begin
 end;
 #endif
 
-// TODO sort the jdk list sensibly
-// TODO add more logging
-// TODO perhaps reconfigure shouldn't download the latest lein?
-// TODO add some sort of HTML readme
