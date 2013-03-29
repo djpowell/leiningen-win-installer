@@ -21,7 +21,6 @@ AppUpdatesURL={#MyAppURL}
 #ifndef configure
 AppModifyPath="{app}\bin\configure-{#MyInstallerBaseName}.exe"
 UninstallFilesDir={app}\bin
-LicenseFile=license.txt
 OutputBaseFilename={#MyInstallerBaseName}-{#MyAppVersion}
 #endif
 #ifdef configure
