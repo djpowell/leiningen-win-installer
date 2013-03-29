@@ -1,7 +1,7 @@
 ; InnoSetup 5.5.3 Installer definition for Leiningen - (c) David Powell 2013
 
 #define MyAppName "Leiningen"
-#define MyAppVersion "alpha_4"
+#define MyAppVersion "alpha_5"
 #define MyAppPublisher "David Powell"
 #define MyAppURL "https://bitbucket.org/djpowell/leiningen-win-installer"
 #define MyInstallerBaseName "leiningen-installer"
@@ -57,7 +57,7 @@ Source: "profiles.clj"; DestDir: "{%LEIN_HOME|{%USERPROFILE}\.lein}"; Flags: onl
 Name: "{group}\Clojure REPL"; Filename: "{app}\bin\lein.bat"; WorkingDir: "{userdocs}"; Parameters: "repl"
 Name: "{group}\Edit profiles.clj"; Filename: "{%LEIN_HOME|{%USERPROFILE}\.lein}\profiles.clj"; Flags: excludefromshowinnewinstall
 Name: "{group}\Online help"; Filename: "http://leiningen-win-installer.djpowell.net/"; Flags: excludefromshowinnewinstall
-Name: "{group}\Configure Leiningen Installation"; Filename: "{app}\configure-{#MyInstallerBaseName}.exe"; Flags: excludefromshowinnewinstall
+Name: "{group}\Configure Leiningen Installation"; Filename: "{app}\bin\configure-{#MyInstallerBaseName}.exe"; Flags: excludefromshowinnewinstall
 #endif
 
 [Run]
