@@ -18,14 +18,22 @@ AppPublisher={#MyAppPublisher}
 AppPublisherURL={#MyAppURL}
 AppSupportURL={#MyAppURL}
 AppUpdatesURL={#MyAppURL}
-AppModifyPath="{app}\bin\modify-{#MyInstallerBaseName}.exe"
-DefaultDirName={%LEIN_HOME|{%USERPROFILE}\.lein}
+#ifndef configure
+AppModifyPath="{app}\bin\configure-{#MyInstallerBaseName}.exe"
 UninstallFilesDir={app}\bin
+LicenseFile=license.txt
+OutputBaseFilename={#MyInstallerBaseName}-{#MyAppVersion}
+#endif
+#ifdef configure
+DisableDirPage=yes
+OutputBaseFilename=configure-{#MyInstallerBaseName}
+Uninstallable=no
+UpdateUninstallLogAppName=no
+#endif
+DefaultDirName={%LEIN_HOME|{%USERPROFILE}\.lein}
 DirExistsWarning=no
 DefaultGroupName={#MyAppName}
 DisableProgramGroupPage=yes
-LicenseFile=license.txt
-OutputBaseFilename={#MyInstallerBaseName}-{#MyAppVersion}
 Compression=zip
 SolidCompression=yes
 ChangesEnvironment=yes
@@ -36,16 +44,20 @@ SetupLogging=yes
 Name: "english"; MessagesFile: "compiler:Default.isl"
 
 [Files]
+#ifndef configure
 Source: "curl.exe"; DestDir: "{app}\bin"
 Source: "curl-ca-bundle.crt"; DestDir: "{app}\bin"
 Source: "license.txt"; DestDir: "{app}\bin"
 Source: "file-assoc-in-0.1.0-standalone.jar"; DestDir: "{app}\bin"
-Source: "Output\modify-{#MyInstallerBaseName}.exe"; DestDir: "{app}\bin"
+Source: "Output\configure-{#MyInstallerBaseName}.exe"; DestDir: "{app}\bin"
 Source: "profiles.clj"; DestDir: "{%LEIN_HOME|{%USERPROFILE}\.lein}"; Flags: onlyifdoesntexist
+#endif
 
 [Icons]                                             
+#ifndef configure
 Name: "{group}\Clojure REPL"; Filename: "{app}\bin\lein.bat"; WorkingDir: "{userdocs}"; Parameters: "repl"
 Name: "{group}\Edit profiles.clj"; Filename: "{%LEIN_HOME|{%USERPROFILE}\.lein}\profiles.clj"
+#endif
 
 [Run]
 Filename: "{app}\bin\curl.exe"; WorkingDir: "{app}\bin"; Parameters: """https://raw.github.com/technomancy/leiningen/stable/bin/lein.bat"" -o lein.bat"; StatusMsg: "Downloading 'lein.bat'"; Flags: runasoriginaluser runminimized
@@ -53,9 +65,11 @@ Filename: "{cmd}"; WorkingDir: "{app}\bin"; Parameters: "/c set LEIN_JAVA_CMD={c
 Filename: "{cmd}"; WorkingDir: "{userdocs}"; Parameters: "/c set LEIN_JAVA_CMD={code:GetSelectedJdkPath} && ""{app}\bin\lein.bat"" repl"; Description: "Run a Clojure REPL"; Flags: postinstall nowait skipifsilent
 
 [UninstallDelete]
+#ifndef configure
 Type: files; Name: "{app}\bin\lein.bat"
 Type: filesandordirs; Name: "{%LEIN_HOME|{%USERPROFILE}\.lein}\self-installs"
 Type: filesandordirs; Name: "{%LEIN_HOME|{%USERPROFILE}\.lein}\indices"
+#endif
 
 [Code]
 
@@ -191,6 +205,15 @@ function InitializeSetup(): Boolean;
 var
   Button : Integer;
 begin            
+#ifdef configure
+  if not IsInstalled() then
+  begin
+    MsgBox('Check that the application is installed, before attempting to configure the installation', mbInformation, MB_OK);
+    Result := False;
+  end
+  else
+  begin
+#endif
   PopulateJdks();
 
   if JdkCount > 0 then
@@ -208,6 +231,9 @@ begin
     Result := (Button = IDYES);
   end 
 
+#ifdef configure
+  end
+#endif
 end;
 
 procedure InitializeWizard();
@@ -422,6 +448,7 @@ begin
   end
 end;
 
+#ifndef configure
 procedure CurUninstallStepChanged(CurUninstallStep: TUninstallStep);
 var
   AppPath: String;
@@ -450,6 +477,7 @@ begin
     Log('Removed LEIN_JAVA_CMD');
   end
 end;
+#endif
 
 // TODO sort the jdk list sensibly
 // TODO add more logging
