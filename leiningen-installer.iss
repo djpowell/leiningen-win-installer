@@ -57,6 +57,7 @@ Source: "profiles.clj"; DestDir: "{%LEIN_HOME|{%USERPROFILE}\.lein}"; Flags: onl
 Name: "{group}\Clojure REPL"; Filename: "{app}\bin\lein.bat"; WorkingDir: "{userdocs}"; Parameters: "repl"
 Name: "{group}\Edit profiles.clj"; Filename: "{%LEIN_HOME|{%USERPROFILE}\.lein}\profiles.clj"; Flags: excludefromshowinnewinstall
 Name: "{group}\Online help"; Filename: "http://leiningen-win-installer.djpowell.net/"; Flags: excludefromshowinnewinstall
+Name: "{group}\Configure Leiningen Installation"; Filename: "{app}\configure-{#MyInstallerBaseName}.exe"; Flags: excludefromshowinnewinstall
 #endif
 
 [Run]
@@ -316,12 +317,12 @@ end;
 
 function NextButtonClick(CurPageID: Integer): Boolean;
 begin
+  Result := True;
   if CurPageId = CustomJdkPage.ID then
   begin
     if FileExists(AddBackslash(CustomJdkPage.Values[0]) + 'bin\javac.exe') then
     begin
       SetSelectedJdkLocation();
-      Result := True;
     end
     else
     begin
@@ -342,12 +343,7 @@ begin
       begin
         SetSelectedJdkLocation();
       end
-      Result := True;
     end
-  end
-  else
-  begin                    
-    Result := True;
   end
 end;
   
