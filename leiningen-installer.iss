@@ -61,9 +61,9 @@ Name: "{group}\Online help"; Filename: "http://leiningen-win-installer.djpowell.
 
 [Run]
 Filename: "{app}\bin\curl.exe"; WorkingDir: "{app}\bin"; Parameters: """https://raw.github.com/technomancy/leiningen/stable/bin/lein.bat"" -o lein.bat"; StatusMsg: "Downloading 'lein.bat'"; Flags: runasoriginaluser runminimized
-Filename: "{cmd}"; WorkingDir: "{app}\bin"; Parameters: "/c set LEIN_JAVA_CMD={code:GetSelectedJdkPath} && ""{app}\bin\lein.bat"" self-install"; StatusMsg: "Downloading leiningen [lein self-install]"; Flags: runasoriginaluser runminimized
-Filename: "{cmd}"; WorkingDir: "{userdocs}"; Parameters: "/c set LEIN_JAVA_CMD={code:GetSelectedJdkPath} && ""{app}\bin\lein.bat"" repl"; Description: "Run a Clojure REPL"; Flags: postinstall nowait skipifsilent
-Filename: "http://leiningen-win-installer.djpowell.net/"; Description: "Open online help"; Flags: postinstall nowait skipifsilent shellexec
+Filename: "{cmd}"; WorkingDir: "{app}\bin"; Parameters: "/c set LEIN_JAVA_CMD={code:GetSelectedJdkPath} && ""{app}\bin\lein.bat"" self-install"; StatusMsg: "Downloading leiningen (lein self-install)"; Flags: runasoriginaluser runminimized
+Filename: "http://leiningen-win-installer.djpowell.net/"; Description: "Open online help"; Flags: postinstall nowait skipifsilent shellexec unchecked
+Filename: "{cmd}"; WorkingDir: "{userdocs}"; Parameters: "/c set LEIN_JAVA_CMD={code:GetSelectedJdkPath} && ""{app}\bin\lein.bat"" repl"; Description: "Run a Clojure REPL"; Flags: postinstall nowait skipifsilent unchecked
 
 [UninstallDelete]
 #ifndef configure
@@ -240,44 +240,55 @@ end;
 procedure InitializeWizard();
 var      
   I, JI : Integer;
+  BestJI : Integer;
+  BestVer : String;
+  Bitness : String;
   Description : String;
 begin
   JdkPage := CreateInputOptionPage(wpSelectProgramGroup, 'Select JDK', '', 'Select the path to a Java Development Kit for Leiningen to use:', True, False);
 
+  BestJI := -2;
+  BestVer := '';
   JI := 0;
   for I := 0 to GetArrayLength(JdkVersions)-1 do
   begin
     if (JdkVersions[I] <> '') then
     begin
       JdkIndexes[JI] := I;
-      JI := JI + 1;
       if Jdk64s[I] then
       begin
-        Description := '64-bit';
+        Bitness := '64-bit';
       end
       else
       begin
-        Description := '32-bit';
+        Bitness := '32-bit';
       end
 
-      Description := Description + ' JDK ' + JdkVersions[I];
+      Description := Bitness + ' JDK ' + JdkVersions[I];
       
-      Description := Description + '    ( ' + JdkPaths[I] + ' )';
+      Description := Bitness + '    ( ' + JdkPaths[I] + ' )';
+
+      if (CompareText(JdkVersions[I] + '_' + Bitness, BestVer)) >= 0 then
+      begin
+        BestVer := Description;
+        BestJI := JI;
+      end
 
       JdkPage.Add(Description);      
+      JI := JI + 1;
     end
   end
 
   if (PreviousJdkPath <> '') then
   begin
-    PreviousJdkIndex := JI;
+    PreviousJdkIndex := JI; 
     JI := JI + 1;
     JdkPage.Add('Previous location.    ( ' + PreviousJdkPath + ' )');
     JdkPage.SelectedValueIndex := PreviousJdkIndex;
   end
-  else
+  else if BestJI <> -2 then
   begin
-    PreviousJdkIndex := -2;
+    JdkPage.SelectedValueIndex := BestJI;
   end
 
   CustomJdkIndex := JI;
