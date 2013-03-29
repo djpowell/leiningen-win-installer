@@ -289,6 +289,7 @@ begin
   end
   else if BestJI <> -2 then
   begin
+    PreviousJdkIndex := -3; 
     JdkPage.SelectedValueIndex := BestJI;
   end
 
@@ -320,7 +321,7 @@ begin
   Result := True;
   if CurPageId = CustomJdkPage.ID then
   begin
-    if FileExists(AddBackslash(CustomJdkPage.Values[0]) + 'bin\javac.exe') then
+    if FileExists(AddBackslash(CustomJdkPage.Values[0]) + 'bin\java.exe') then
     begin
       SetSelectedJdkLocation();
     end
