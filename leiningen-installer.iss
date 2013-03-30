@@ -69,9 +69,9 @@ Source: "profiles.clj"; DestDir: "{%LEIN_HOME|{%USERPROFILE}\.lein}"; Flags: onl
 
 [Icons]                                             
 #ifndef configure
-Name: "{group}\Clojure REPL"; Filename: "{app}\bin\lein.bat"; WorkingDir: "{userdocs}"; Parameters: "repl"
-Name: "{group}\Edit profiles.clj"; Filename: "{%LEIN_HOME|{%USERPROFILE}\.lein}\profiles.clj"; Flags: excludefromshowinnewinstall
-Name: "{group}\Online help"; Filename: "{#MyAppURL}"; Flags: excludefromshowinnewinstall
+Name: "{group}\Clojure REPL"; Filename: "{app}\bin\lein.bat"; WorkingDir: "{userdocs}"; Parameters: "repl"; IconFilename: "{sys}\shell32.dll"; IconIndex: 133
+Name: "{group}\Edit profiles.clj"; Filename: "{%LEIN_HOME|{%USERPROFILE}\.lein}\profiles.clj"; Flags: excludefromshowinnewinstall; IconFilename: "{sys}\shell32.dll"; IconIndex: 69
+Name: "{group}\Online help"; Filename: "{#MyAppURL}"; Flags: excludefromshowinnewinstall; IconFilename: "{sys}\shell32.dll"; IconIndex: 154
 Name: "{group}\Configure Leiningen Installation"; Filename: "{app}\bin\configure-{#MyInstallerBaseName}.exe"; Flags: excludefromshowinnewinstall
 #endif
 
