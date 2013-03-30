@@ -42,6 +42,16 @@ SetupLogging=yes
 [Languages]
 Name: "english"; MessagesFile: "compiler:Default.isl"
 
+[Messages]
+#ifdef configure
+WelcomeLabel2=This will configure [name] on your computer.%n%nIt is recommended that you close all other applications before continuing.
+WizardReady=Ready to Configure
+ReadyLabel1=Setup is now ready to begin configuring [name] on your computer.
+ReadyLabel2a=Click Configure to continue with the installation, or click Back if you want to review or change any settings.
+ReadyLabel2b=Click Configure to continue with the installation.
+ButtonInstall=&Configure
+#endif
+
 [Files]
 #ifndef configure
 Source: "curl.exe"; DestDir: "{app}\bin"
@@ -416,9 +426,20 @@ begin
 end;
 
 function UpdateReadyMemo(Space, NewLine, MemoUserInfoInfo, MemoDirInfo, MemoTypeInfo, MemoComponentsInfo, MemoGroupInfo, MemoTasksInfo: String): String;
+var
+  InstallInfo : String;
 begin
+  if (MemoDirInfo <> '') then
+  begin
+    InstallInfo := MemoDirInfo;
+  end
+  else
+  begin
+    InstallInfo := 'Install location:' + NewLine + Space + ExpandConstant('{app}') + NewLine;
+  end
+
   Result := MemoUserInfoInfo +
-            MemoDirInfo +
+            InstallInfo +
             MemoTypeInfo +
             MemoComponentsInfo +
             MemoGroupInfo +
