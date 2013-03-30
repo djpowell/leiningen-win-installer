@@ -33,6 +33,8 @@ DefaultDirName={%LEIN_HOME|{%USERPROFILE}\.lein}
 DirExistsWarning=no
 DefaultGroupName={#MyAppName}
 DisableProgramGroupPage=yes
+; add some extra space for the bat and jar files
+ExtraDiskSpaceRequired=15000000
 Compression=zip
 SolidCompression=yes
 ChangesEnvironment=yes
@@ -275,10 +277,9 @@ begin
         Bitness := '32-bit';
       end
 
-      Description := Bitness + ' JDK ' + JdkVersions[I];
-      
-      Description := Bitness + '    ( ' + JdkPaths[I] + ' )';
+      Description := Bitness + ' JDK ' + JdkVersions[I] + '    ( ' + JdkPaths[I] + ' )';
 
+      // Set the default as the JDK with the highest version, preferring 64-bit if available
       if (CompareText(JdkVersions[I] + '_' + Bitness, BestVer)) >= 0 then
       begin
         BestVer := Description;
