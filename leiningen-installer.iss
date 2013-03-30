@@ -71,14 +71,14 @@ Source: "profiles.clj"; DestDir: "{%LEIN_HOME|{%USERPROFILE}\.lein}"; Flags: onl
 #ifndef configure
 Name: "{group}\Clojure REPL"; Filename: "{app}\bin\lein.bat"; WorkingDir: "{userdocs}"; Parameters: "repl"
 Name: "{group}\Edit profiles.clj"; Filename: "{%LEIN_HOME|{%USERPROFILE}\.lein}\profiles.clj"; Flags: excludefromshowinnewinstall
-Name: "{group}\Online help"; Filename: "{%MyAppURL}"; Flags: excludefromshowinnewinstall
+Name: "{group}\Online help"; Filename: "{#MyAppURL}"; Flags: excludefromshowinnewinstall
 Name: "{group}\Configure Leiningen Installation"; Filename: "{app}\bin\configure-{#MyInstallerBaseName}.exe"; Flags: excludefromshowinnewinstall
 #endif
 
 [Run]
 Filename: "{app}\bin\curl.exe"; WorkingDir: "{app}\bin"; Parameters: """https://raw.github.com/technomancy/leiningen/stable/bin/lein.bat"" -o lein.bat"; StatusMsg: "Downloading 'lein.bat'"; Flags: runasoriginaluser runminimized
 Filename: "{cmd}"; WorkingDir: "{app}\bin"; Parameters: "/c set LEIN_JAVA_CMD={code:GetSelectedJdkPath} && ""{app}\bin\lein.bat"" self-install"; StatusMsg: "Downloading leiningen (lein self-install)"; Flags: runasoriginaluser runminimized
-Filename: "{%MyAppURL}"; Description: "Open online help"; Flags: postinstall nowait skipifsilent shellexec
+Filename: "{#MyAppURL}"; Description: "Open online help"; Flags: postinstall nowait skipifsilent shellexec
 Filename: "{cmd}"; WorkingDir: "{userdocs}"; Parameters: "/c set LEIN_JAVA_CMD={code:GetSelectedJdkPath} && ""{app}\bin\lein.bat"" repl"; Description: "Run a Clojure REPL"; Flags: postinstall nowait skipifsilent
 
 [UninstallDelete]
