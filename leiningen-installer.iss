@@ -22,6 +22,8 @@ AppUpdatesURL={#MyAppURL}
 AppModifyPath="{app}\bin\configure-{#MyInstallerBaseName}.exe"
 UninstallFilesDir={app}\bin
 OutputBaseFilename={#MyInstallerBaseName}-{#MyAppVersion}
+; add some extra space for the bat and jar files
+ExtraDiskSpaceRequired=15000000
 #endif
 #ifdef configure
 DisableDirPage=yes
@@ -33,8 +35,6 @@ DefaultDirName={%LEIN_HOME|{%USERPROFILE}\.lein}
 DirExistsWarning=no
 DefaultGroupName={#MyAppName}
 DisableProgramGroupPage=yes
-; add some extra space for the bat and jar files
-ExtraDiskSpaceRequired=15000000
 Compression=zip
 SolidCompression=yes
 ChangesEnvironment=yes
@@ -49,9 +49,12 @@ Name: "english"; MessagesFile: "compiler:Default.isl"
 WelcomeLabel2=This will configure [name] on your computer.%n%nIt is recommended that you close all other applications before continuing.
 WizardReady=Ready to Configure
 ReadyLabel1=Setup is now ready to begin configuring [name] on your computer.
-ReadyLabel2a=Click Configure to continue with the installation, or click Back if you want to review or change any settings.
+ReadyLabel2a=Click Configure to continue, or click Back if you want to review or change any settings.
 ReadyLabel2b=Click Configure to continue with the installation.
 ButtonInstall=&Configure
+WizardInstalling=Configuring
+InstallingLabel=Please wait while Setup configures [name] on your computer.
+FinishedLabelNoIcons=Setup has finished configuring [name] on your computer.
 #endif
 
 [Files]
