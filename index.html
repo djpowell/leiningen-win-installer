@@ -8,7 +8,11 @@
 
     <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
 
-    <title>Leiningen-win-installer</title>
+    <style type="text/css">
+      img {width: auto; height: auto;}
+    </style>
+
+    <title>leiningen-win-installer</title>
   </head>
 
   <body>
@@ -16,47 +20,215 @@
     <!-- HEADER -->
     <div id="header_wrap" class="outer">
         <header class="inner">
-          <a id="forkme_banner" href="https://github.com/djpowell/leiningen-win-installer">View on GitHub</a>
-
-          <h1 id="project_title">Leiningen-win-installer</h1>
+          <h1 id="project_title">leiningen-win-installer</h1>
           <h2 id="project_tagline">An Installer for Leiningen on Windows</h2>
-
-            <section id="downloads">
-              <a class="zip_download_link" href="https://github.com/djpowell/leiningen-win-installer/zipball/master">Download this project as a .zip file</a>
-              <a class="tar_download_link" href="https://github.com/djpowell/leiningen-win-installer/tarball/master">Download this project as a tar.gz file</a>
-            </section>
         </header>
     </div>
 
     <!-- MAIN CONTENT -->
     <div id="main_content_wrap" class="outer">
       <section id="main_content" class="inner">
-        <h3>Welcome to GitHub Pages.</h3>
 
-<p>This automatic page generator is the easiest way to create beautiful pages for all of your projects. Author your page content here using GitHub Flavored Markdown, select a template crafted by a designer, and publish. After your page is generated, you can check out the new branch:</p>
+<h2>Installation</h2>
 
-<pre><code>$ cd your_repo_root/repo_name
-$ git fetch origin
-$ git checkout gh-pages
+<div style="font-size: 130%">
+  
+<p>
+  Download and install the <a href="http://www.oracle.com/technetwork/java/javase/downloads/index.html"><strong>Java SE 7 JDK</strong></a>.
+</p>
+
+<p>
+  Download and
+  install <a href="https://bitbucket.org/djpowell/leiningen-win-installer/downloads/leiningen-installer-beta1.exe"><strong>leiningen-win-installer</strong></a>.
+</p>
+
+<p>You're done!</p>
+
+</div>
+
+
+<h2>Learning more</h2>
+
+<p>
+  Now that you have Leiningen installed, check out these resources to learn more about getting started with Leiningen and Clojure:
+</p>
+
+<p>
+  <a href="http://clojure-doc.org/"><strong>clojure-doc.org</strong></a> is a community documentation
+  project for the Clojure programming language.
+  Now that you have Leiningen installed, check out the 
+  <a href="http://clojure-doc.org/articles/tutorials/getting_started.html">Getting Started</a> section of the site.
+</p>
+
+<p>
+  <a href="http://leiningen.org/"><strong>leiningen.org</strong></a> is the official website for Leiningen.
+  Try out the <a href="https://github.com/technomancy/leiningen/blob/stable/doc/TUTORIAL.md">Leiningen Tutorial</a>
+</p>
+
+<p>
+  <a href="http://clojure.org/"><strong>clojure.org</strong></a> is the official website for the Clojure programming language.
+</p>
+
+<p>
+  <a href="http://clojuredocs.org/"><strong>clojuredocs.org</strong></a>
+  provides reference documentation and examples for the core Clojure
+  libraries.
+</p>
+
+<h2>Technology</h2>
+
+<h4>Leiningen</h4>
+
+<p>
+  <a href="http://leiningen.org/">Leiningen</a> is an essential tool
+  creating, building, and automating Clojure projects.
+</p>
+
+<h4>Clojure</h4>
+
+<p><a href="http://clojure.org">Clojure</a> is a dynamic functional
+programming language for the Java platform.</p>
+
+<h2>Detailed installation<h2>
+
+<h4>
+  Install location
+</h4>
+
+<img src="images/screens/screen2.png" />
+
+<p>
+  The default install location
+  is <strong><em>%USERPROFILE%</em>\.lein</strong>.  Files related to
+  the installer will be copied
+  to <strong><em>%USERPROFILE%</em>\.lein\bin</strong>
+</p>
+
+<p>
+  This location is recommended, because it is the location that
+  Leiningen writes its files, and Leiningen requires write-access to
+  itself in order to perform upgrades.
+</p>
+  
+
+<h4>JDK Location</h4>
+
+<img src="images/screens/screen3.png" />
+
+<p>
+  The installer requires that you have a Java Development Kit
+  installed before attempting installation.
+</p>
+
+<p>
+  The installer will display a list of JDKs installed on your system,
+  or you may specify a custom path.  If you have already installed
+  Leiningen, then your previous location may be pre-selected by
+  default.
+</p>
+
+<h4>Installing</h4>
+
+<img src="images/screens/screen5.png" />
+
+<p>
+  During the install process, the latest stable version of Leiningen
+  will be download.  This requires an internet connection, and may
+  take a minute.
+</p>
+
+<h4>Clojure REPL</h4>
+
+<img src="images/screens/screen7.png" />
+
+<p>
+  The installer will install a shortcut to a <strong>Clojure
+  REPL</strong> on your startup menu, and may start it after
+  installation.
+</p>
+
+<p>
+  From this REPL you can try entering Clojure code.  Try it out:
+</p>
+
+<pre><code><strong>user=> </strong>(println (+ 2 3))
+5
 </code></pre>
 
-<p>If you're using the GitHub for Mac, simply sync your repository and you'll see the new branch.</p>
+<h4>Configuring Leiningen</h4>
 
-<h3>Designer Templates</h3>
+<img src="images/screens/screen8.png" />
 
-<p>We've crafted some handsome templates for you to use. Go ahead and continue to layouts to browse through them. You can easily go back to edit your page before publishing. After publishing your page, you can revisit the page generator and switch to another theme. Your Page content will be preserved if it remained markdown format.</p>
+<p>
+  If you install a newer version of the JDK, you might want to
+  reconfigure Leiningen to use the new version.  From the start menu select the <strong>Configure Leiningen Installation</strong> option, which will run the installer and will allow you to change the JDK path.  This option will also ensure that you are using the latest stable version of Leiningen.
+</p>
 
-<h3>Rather Drive Stick?</h3>
+<p>
+  Leiningen supports a wide selection
+  of <a href="https://github.com/technomancy/leiningen/wiki/Plugins"><strong>plugins</strong></a>.
+  To install plugin, edit
+  your <strong><em>%USERPROFILE%</em>\.lein\profiles.clj</strong> file.
+  A shortcut to your profiles.clj file is available via the start menu.
+</p>
 
-<p>If you prefer to not use the automatic generator, push a branch named <code>gh-pages</code> to your repository to create a page manually. In addition to supporting regular HTML content, GitHub Pages support Jekyll, a simple, blog aware static site generator written by our own Tom Preston-Werner. Jekyll makes it easy to create site-wide headers and footers without having to copy them across every page. It also offers intelligent blog support and other advanced templating features.</p>
+<h2>What the installer does</h2>
 
-<h3>Authors and Contributors</h3>
+<p>
+  The installer makes <strong>curl.exe</strong> available so that leiningen can download and upgrade files.
+</p>
 
-<p>You can <a href="https://github.com/blog/821" class="user-mention">@mention</a> a GitHub username to generate a link to their profile. The resulting <code>&lt;a&gt;</code> element will link to the contributor's GitHub Profile. For example: In 2007, Chris Wanstrath (<a href="https://github.com/defunkt" class="user-mention">@defunkt</a>), PJ Hyett (<a href="https://github.com/pjhyett" class="user-mention">@pjhyett</a>), and Tom Preston-Werner (<a href="https://github.com/mojombo" class="user-mention">@mojombo</a>) founded GitHub.</p>
+<p>
+  The installer downloads and installs the
+  latest <strong>lein.bat</strong> from github.
+</p>
 
-<h3>Support or Contact</h3>
+<p>
+  <strong>lein.bat</strong> is added to your PATH variable.
+</p>
 
-<p>Having trouble with Pages? Check out the documentation at <a href="http://help.github.com/pages">http://help.github.com/pages</a> or contact <a href="mailto:support@github.com">support@github.com</a> and we’ll help you sort it out.</p>
+<p>
+  <strong>LEIN_JAVA_CMD</strong> is set to point to your selected JDK,
+  and the <strong>:java-cmd</strong> property is set in your user
+  profile in <strong>profiles.clj</strong>.
+</p>
+    
+<p>
+  <strong>lein self-install</strong> is run to install the Leiningen JAR file.
+</p>
+
+<p>
+  The uninstaller will remove the files that were installed, together
+  with the Leiningen self-installs and search indexes; the environment
+  variables that were set, and the additions to the PATH.
+</p>
+
+<h2>Source code</h2>
+
+<p>
+  The installer is produced
+  using <a href="http://www.jrsoftware.org/isinfo.php">InnoSetup</a>.
+</p>
+
+<p>
+  Source code for the installer is available at:
+  <a href="http://bitbucket.org/djpowell/leiningen-win-installer">http://bitbucket.org/djpowell/leiningen-win-installer</a>
+</p>
+
+<h2>Support</h2>
+
+<p>
+  You can raise issues and submit patches at the project's BitBucket
+  site:
+  <a href="http://bitbucket.org/djpowell/leiningen-win-installer">http://bitbucket.org/djpowell/leiningen-win-installer</a>  
+</p>
+
+<p>
+  You can also send me a
+  message <a href="https://bitbucket.org/djpowell">via BitBucket</a>,
+  or <a href="https://github.com/djpowell">via GitHub</a>.
+</p>
+
       </section>
     </div>
 
@@ -64,7 +236,6 @@ $ git checkout gh-pages
     <div id="footer_wrap" class="outer">
       <footer class="inner">
         <p class="copyright">Leiningen-win-installer maintained by <a href="https://github.com/djpowell">djpowell</a></p>
-        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
       </footer>
     </div>
 
