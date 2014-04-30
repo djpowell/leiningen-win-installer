@@ -4,10 +4,6 @@ A standalone Windows Installer for Leiningen and Clojure.
 
 [Download](https://bitbucket.org/djpowell/leiningen-win-installer/downloads/leiningen-installer-beta1.exe)
 
-## Status
-
-This installer is currently a work in progress, but seem to work ok.
-
 ## Details
 
 The installer installs Leiningen and CURL to a per-user install
@@ -25,7 +21,7 @@ profiles.clj.
 
 
 Produced using [InnoSetup
-5.5.3](http://www.jrsoftware.org/isinfo.php).
+5.5.4](http://www.jrsoftware.org/isinfo.php).
 
 ## License
 
