@@ -353,9 +353,9 @@ begin
     end
     else
     begin
-      SelectedJdkIndex := JdkIndexes[JdkPage.SelectedValueIndex];
       if JdkPage.SelectedValueIndex <> CustomJdkIndex then
       begin
+        SelectedJdkIndex := JdkIndexes[JdkPage.SelectedValueIndex];
         SetSelectedJdkLocation();
       end
     end
